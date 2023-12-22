@@ -13,6 +13,7 @@ type menuRepository struct {
 
 type MenuRepository interface {
 	InsertMenu(ctx context.Context, params *model.Menu) error
+	GetMenus(ctx context.Context, params model.Menu) ([]model.Menu, error)
 }
 
 func NewMenuRepository(
@@ -28,5 +29,22 @@ func (r *menuRepository) InsertMenu(ctx context.Context, params *model.Menu) err
 		return err
 	}
 	return nil
+}
 
+func (r *menuRepository) GetMenus(ctx context.Context, params model.Menu) ([]model.Menu, error) {
+	var (
+		menus []model.Menu
+	)
+
+	db := r.qry.Model(model.Menu{})
+
+	if params.UserID != 0 {
+		db = db.Where("user_id = ?", params.UserID)
+	}
+
+	if err := db.Find(&menus).Error; err != nil {
+		return nil, err
+	}
+
+	return menus, nil
 }

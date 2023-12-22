@@ -13,33 +13,28 @@ type menuUC struct {
 }
 
 type Menu interface {
-	// GetProducts(ctx context.Context, params product.ProductsRequest) ([]model.Product, error)
 	CreateMenu(ctx context.Context, params menu.CreateMenuRequest) error
+	GetMenus(ctx context.Context, params model.Menu) ([]model.Menu, error)
 }
 
-func NewMenuUC(menuRepo repository.MenuRepository) Menu {
+func NewMenuUC(
+	menuRepo repository.MenuRepository) Menu {
 	return &menuUC{
 		menuRepo: menuRepo,
 	}
 }
 
-// func (u *productUC) GetProducts(ctx context.Context, params product.ProductsRequest) ([]model.Product, error) {
+func (u *menuUC) GetMenus(ctx context.Context, params model.Menu) ([]model.Menu, error) {
+	menus, err := u.menuRepo.GetMenus(ctx, model.Menu{
+		UserID: params.UserID,
+	})
+	if err != nil {
+		return nil, err
 
-// 	if err := params.Validate(); err != nil {
-// 		return nil, err
-// 	}
+	}
+	return menus, nil
+}
 
-// 	products, err := u.repo.GetProducts(ctx, &model.Product{
-// 		ProductName:     params.SearchName,
-// 		ProductCategory: params.ProductCategory,
-// 	})
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-//		return products, nil
-//	}
 func (u *menuUC) CreateMenu(ctx context.Context, params menu.CreateMenuRequest) error {
 
 	if err := params.Validate(); err != nil {
@@ -50,6 +45,7 @@ func (u *menuUC) CreateMenu(ctx context.Context, params menu.CreateMenuRequest) 
 		Name:     params.Name,
 		Price:    params.Price,
 		ImageUrl: params.ImageUrl,
+		UserID:   params.UserID,
 	})
 
 	if err != nil {

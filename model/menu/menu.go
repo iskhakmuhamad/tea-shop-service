@@ -10,6 +10,7 @@ type CreateMenuRequest struct {
 	Name     string `json:"name"`
 	Price    int64  `json:"price"`
 	ImageUrl string `json:"image_url"`
+	UserID   int64
 }
 
 func (params *CreateMenuRequest) Validate() error {
