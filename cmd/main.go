@@ -37,7 +37,9 @@ func main() {
 		menuRoutes := apiRoutes.Group("menu")
 		{
 			menuRoutes.POST("/", middleware.AuthorizeJWT(tokenUC), menuDelivery.CreateMenu)
+			menuRoutes.GET("/:menu_id", middleware.AuthorizeJWT(tokenUC), menuDelivery.GetMenuByID)
 			menuRoutes.GET("/", middleware.AuthorizeJWT(tokenUC), menuDelivery.GetMenus)
+			menuRoutes.PUT("/", middleware.AuthorizeJWT(tokenUC), menuDelivery.UpdateMenuByID)
 		}
 	}
 	r.Run()
