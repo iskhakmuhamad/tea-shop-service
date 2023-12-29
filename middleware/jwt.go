@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -25,9 +24,9 @@ func AuthorizeJWT(u usecases.Token) gin.HandlerFunc {
 		if token.Valid {
 			_ = token.Claims.(jwt.MapClaims)
 		} else {
-			log.Println(err)
 			response := shared.BuildErrorResponse("Token is not valid", err.Error())
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
 		}
 	}
 }

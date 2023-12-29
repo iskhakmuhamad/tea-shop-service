@@ -89,13 +89,15 @@ func (authDelivery *authDelivery) Logout(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, err := authDelivery.tokenUC.ValidateToken(authHeader)
 	if err != nil {
+		res := shared.BuildErrorResponse("Logout Failed!", err.Error())
+		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	email := fmt.Sprintf("%v", claims["email"])
 	err = authDelivery.authUC.Logout(ctx, email)
 	if err != nil {
-		res := shared.BuildErrorResponse("Login Failed!", err.Error())
+		res := shared.BuildErrorResponse("Logout Failed!", err.Error())
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
